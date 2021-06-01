@@ -1,0 +1,223 @@
+﻿@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>区域分割标注工具</title>
+    <!-- <link rel="stylesheet" type="text/css" href="../public/css/bootstrap.css"/> -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../public/css/tool/style.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/style.css" />
+</head>
+<body ondragstart="return false" onselectstart="return false">
+
+    <div id="tool_top" class="tool-top"></div>
+
+    <div id="box-main" class="main" style="display:none">
+        <div class="">
+            <div class="tool-bar">
+                <ul class="icon-list">
+                    <li class="icon-new add-boxs" data-desc="新建域"></li>
+                    <li class="icon-new add-point" data-desc="单点"></li>
+                    <li class="icon-copy" data-desc="复制" id="copyJson"></li>
+                    <li class="icon-reset" data-desc="重置" id="resetLabel"></li>
+                    <li class="icon-star default " id="favicoBtn" data-desc="收藏"></li>
+                    <li class="icon-pushpin " id="suspendBtn" data-desc="挂起"></li>
+                    <li class="icon-filter " id="filterBtn" data-desc="滤镜"></li>
+                    <li class="icon-time " id="historyBtn" data-desc="数据历史记录"></li>
+                    <li class="icon-colors " id="colorCardBtn" data-desc="属性对照色卡">
+                        <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="26" height="26">
+                            <path d="M298.666667 298.666667m-170.666667 0a170.666667 170.666667 0 1 0 341.333333 0 170.666667 170.666667 0 1 0-341.333333 0Z"
+                                  fill="#4995DF" />
+                            <path d="M298.666667 725.333333m-170.666667 0a170.666667 170.666667 0 1 0 341.333333 0 170.666667 170.666667 0 1 0-341.333333 0Z"
+                                  fill="#d81e06" />
+                            <path d="M725.333333 298.666667m-170.666666 0a170.666667 170.666667 0 1 0 341.333333 0 170.666667 170.666667 0 1 0-341.333333 0Z"
+                                  fill="#1afa29" />
+                            <path d="M725.333333 725.333333m-170.666666 0a170.666667 170.666667 0 1 0 341.333333 0 170.666667 170.666667 0 1 0-341.333333 0Z"
+                                  fill="#F7D559" />
+                        </svg>
+                    </li>
+                </ul>
+            </div>
+            <div class="left-con">
+                <div class="mainimg scrollbarbig" id="main-con">
+                    <div id="can-con" style="width: 100%; height: 100%;" class="can-con">
+                        <canvas id="canvas"></canvas>
+                        <canvas id="canvasMask"></canvas>
+                    </div>
+                </div>
+
+                <div>
+
+                    <div id="displaybtn" class="displaybtn">
+                        <i class="glyphicon glyphicon-resize-full"></i>
+                    </div>
+                    <div id="addpic" class="displaybtn" style="top:34px;">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </div>
+                    <div id="lesspic" class="displaybtn" style="top:65px;">
+                        <i class="glyphicon glyphicon-minus"></i>
+                    </div>
+                </div>
+
+                <div class="" id="tip-toast"></div>
+                <div class="button-con" id="tool_picbtn" style="bottom: 0px; padding:10px; height:150px;">
+                    <div class="oz" style="height: 50px; position: relative;">
+                        <div class="playPrevButton simpleBtn" id="playPrev">
+                            <i class="glyphicon glyphicon-step-backward"></i>
+                        </div>
+                        <div class="playNextButton simpleBtn" id="playNext">
+                            <i class="glyphicon glyphicon-step-forward"></i>
+                        </div>
+                        <div class="playButton simpleBtn" id="play" type="播放">
+                            <i class="glyphicon glyphicon-play"></i>
+                        </div>
+                        <div style=" float: left;width: 40px;height: 34px; display: none">
+                            <input id="paySpeed" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' style="width: 40px; width: 40px; height: 34px; text-align: center;" value="1" />
+                        </div>
+
+                        <div class="playerSlider" style="position:relative;">
+                            <div class="sliderPress"></div>
+                            <div class="sliderHandle" style="">
+                            </div>
+                        </div>
+
+                        <div class="sliderHandle_text">
+                            <span class="text slidetext">0%</span>
+                        </div>
+                        <div class='flex-box'>
+                            <div class="nextButton divBtn" id="check_comment">
+                                <span class="divBtnText">
+                                    <img src="/public/images/svg/comment.svg">
+                                    查看备注
+                                    <div style="border-radius:50%; width:8px;height:8px; border:solid 1px red;background-color:red;padding:0px;display:none;position:relative;bottom:10px;">
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="nextButton divBtn" id="autosave">
+                                <i><img src="../public/images/svg/auto-save.svg"></i>
+                                <span class="divBtnText">自动保存</span>
+                            </div>
+                            <div class="copyJsonButton divBtn" id="markBack">
+                                <span class="divBtnText">标记打回</span>
+                            </div>
+                            <div class="nextButton divBtn" id="taskstop">
+                                <i><img src="../public/images/svg/pause.svg"></i>
+                                <span class="divBtnText">暂停</span>
+                            </div>
+                            <div class="nextButton divBtn" id="outBtn">
+                                <i><img src="../public/images/svg/leave.svg"></i>
+                                <span class="divBtnText">离开</span>
+                            </div>
+                            <div class="nextButton divBtn" id="nextObjToJson">
+                                <i><img src="../public/images/svg/next-batch.svg"></i>
+                                <span class="divBtnText">下一批</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-container">
+                        <div id="pic-info" style="padding-left: 10px;"></div>
+                        <div style="padding-left: 10px;margin-top: 10px; bottom: 10px; color:#999 ; display: flex; align-items: center;width:100%">
+                            <div id="pic-name" style="font-size: 12px;display: inline-flex;"></div>
+                            <div id="pic-copy" style="position:relative; display: inline-flex; margin-left: 5px; cursor: pointer;">
+                                <div data-toggle="popover" data-trigger="hover" data-placement="top" data-content="一键复制当前图片信息">
+                                    <img src="/public/images/info-copy.png" style="width: 18px;">
+                                </div>
+                            </div>
+                            <div style="position:absolute;right: 25px;cursor: pointer;"><span id="save-time"></span></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mb20 ">
+                    <div style="line-height: 34px; margin-left:10px;">
+                        <span style="display:none;" id="rejectObjspan">
+                            <b>审核意见:</b>
+                            <input type="text" id="suggestion" style="width:40%">
+                        </span>
+
+                        <div class="rejectButton divBtn" id="rejectObjToJson" style="display:none">
+                            <i class="glyphicon glyphicon glyphicon-share"></i>
+                            <span class="divBtnText">驳回</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="right-con">
+                <div class="r-top" id="r-top">
+                    <div id="selecr-con"></div>
+                    <!--<a class="slidLbtn glyphicon glyphicon-menu-left"></a>-->
+                   
+
+                </div>
+
+                <div class="r-bottom">
+                    <div class="r-t-event"></div>
+                    <div id="box-top" class="r-t-top"></div>
+                    <div id="box-con" class="r-t-con"></div>
+                </div>
+            </div>
+            <div id="flash_tip" class="mode_tip"></div>
+
+        </div>
+    </div>
+    <div id="color_card_icon" style="display: inline-block;"></div>
+    <div class="ant-tooltip  ant-tooltip-placement-right  ant-tooltip-hidden desc-hover"
+         style="left: 57px; top: 91px; transform-origin: -4px 50%;" id="desc-hover">
+        <div class="ant-tooltip-content">
+            <div class="ant-tooltip-arrow"></div>
+            <div class="ant-tooltip-inner" role="tooltip" id="hover-content">新建框</div>
+        </div>
+    </div>
+    <div class="ant-popover history-card ant-popover-placement-right history-record"
+         style="left: 80px; transform-origin: -4px 50%;" id="history-record">
+        <div class="ant-popover-content">
+            <div class="ant-popover-arrow"></div>
+            <div class="ant-popover-inner" role="tooltip">
+                <div>
+                    <div class="ant-popover-title">数据历史记录</div>
+                    <div class="ant-popover-inner-content">
+                        <div id="record-container" class="record-container" style="text-align: center;">
+                            <div>loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../public/js/lib/jquery.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../public/js/lib/numbers.min.js"></script>
+    <script type="text/javascript" src="../public/js/lib/main.js"></script>
+    <script type="text/javascript" src="../public/js/lib/jbase64.js"></script>
+    <script type="text/javascript" src="../public/js/lib/event.js"></script>
+    <script type="text/javascript" src="../public/js/lib/datatrans.js?v=20190129"></script>
+    <script type="text/javascript" src="../public/js/lib/FitMaker.js"></script>
+    <script type="text/javascript" src="../public/js/lib/utils.js"></script>
+
+    <script type="text/javascript" src="../public/js/ui/top.js?v=20201029"></script>
+    <script type="text/javascript" src="../public/js/ui/top_back.js?v=20200919"></script>
+    <script type="text/javascript" src="../public/js/ui/tool_popup.js"></script>
+    <script type="text/javascript" src="../public/js/ui/showkey.js?v=20201029"></script>
+    <script type="text/javascript" src="../public/js/ui/tool_slide_bar.js"></script>
+
+    <script type="text/javascript" src="../public/js/ui_par/measureDistance.js"></script>
+    <script type="text/javascript" src="../public/js/ui_par/ui.js?v=20201029"></script>
+    <script type="text/javascript" src="../public/js/ui_par/colorCard.js"></script>
+    <script type="text/javascript" src="../public/js/ui/clickdata.js"></script>
+    <script type="text/javascript" src="../public/js/ui/curvecanvas.js"></script>
+    <script type="text/javascript" src="../public/js/ui/savefun.js?v=20201102"></script>
+    <script type="text/javascript" src="../public/js/ui/to3ddata.js?v=20190129"></script>
+    <script type="text/javascript" src="../public/js/parsing/main.js"></script>
+    <script type="text/javascript" src="../public/js/lib/tool_data_record.js"></script>
+    <script type="text/javascript" src="~/toolbar.js"></script>
+
+
+</body>
+</html>

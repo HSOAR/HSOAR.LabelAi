@@ -1,0 +1,121 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html ng-app="loginApp" ng-controller="LoginController as loginVm">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="H3Cloud VDI">
+    <title ng-bind="loginVm.custom.topTitle"></title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/animate.min.css" />
+    <link rel="stylesheet" href="~/Content/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Content/css/simple-line-icons.css" />
+    <link rel="stylesheet" href="~/Content/css/angular-motion.css" />
+    <link rel="stylesheet" href="~/Content/css/ngDialog.min.css" />
+    <link rel="stylesheet" href="~/Content/css/ngDialog-theme-default.min.css" />
+    <link rel="stylesheet" href="~/Content/css/ngDialog-theme-plain.min.css" />
+    <link rel="stylesheet" href="~/Content/css/toaster.min.css" />
+    <link href="~/Content/css/login.css" rel="stylesheet" />
+</head>
+
+<body ondragstart="return false">
+    <toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+    <!--<img class="h3cloud-logo" src="Common/img/h3cloud-logo.png"/>-->
+    <div class="body-contain text-center container">
+        <div class="row minH">
+            <div class="col-md-5 col-md-offset-7 vertical-top">
+                <div class="text-ellipsis text-center">
+                    @*<img src="~/Content/Images/logo_h3cd.png" alt="" class="image-logo-header">*@
+                    <span class="h3ctext text-white" translate="login.logo.name"></span>
+                </div>
+
+                <div class="panel-body row">
+                    <div class="col-md-11 col-md-offset-1" style="padding-top:10px">
+                        <form autocomplete="off" novalidate ng-submit="loginVm.login()" name="loginForm" class="form-validation">
+                            <fieldset>
+                                <div class="form-group input-group m-b-none col-xs-12">
+                                    <span class="input-group-addon input-group-label b-b-n">
+                                        <i class="fa fa-user text-fa-lg"></i>
+                                    </span>
+                                    <input class="form-control input-group-text input-group-text-font b-b-n" name="userName" type="text"
+                                           ng-model="loginVm.user.userName"
+                                           autofocus required id="username">
+                                    <div class="require-tip" ng-messages="loginForm.userName.$error" ng-if="loginForm.userName.$touched||loginForm.userName.$dirty">
+                                        <div class="fa fa-exclamation-triangle" ng-message="required" uib-tooltip="{{'login.error.required' |translate}}" tooltip-placement="top"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group input-group m-b-none col-xs-12">
+                                    <span class="input-group-addon input-group-label">
+                                        <i class="fa fa-lock text-fa-lg"></i>
+                                    </span>
+                                    <input class="form-control input-group-text input-group-text-font" name="password" type="password"
+                                           ng-model="loginVm.user.password" required id="password">
+                                    <div class="require-tip" ng-messages="loginForm.password.$error" ng-if="loginForm.password.$touched||loginForm.password.$dirty">
+                                        <div class="fa fa-exclamation-triangle" ng-message="required" uib-tooltip="{{'login.error.required' |translate}}" tooltip-placement="top"></div>
+                                    </div>
+                                </div>
+                                <div class="errorMessage">
+                                    <div class="text-danger text-base" ng-class="{'active':loginVm.errorMessage}" ng-if="loginVm.errorMessage" ng-bind="loginVm.errorMessage"></div>
+                                </div>
+                                <input type="submit" value="" class="btn btn-block" id="loginBtn"
+                                       ng-disabled="(loginForm.userName.$touched||loginForm.password.$touched)&&loginForm.$invalid">
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+ 
+            </div>
+            <div class="text-center text-white copyright">
+                <span translate="login.right"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlap" ng-if="loginVm.pageLoading">
+        <img width="95" height="95" src="~/Content/Images/loading1.gif">
+    </div>
+     <!-- jQuery -->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <!-- Angular -->
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-resource.min.js"></script>
+    <script src="~/Scripts/toaster.min.js"></script>
+    <script src="~/Scripts/vdi-angular-strap.min.js"></script>
+    <script src="~/Scripts/vdi-angular-strap.tpl.min.js"></script>
+    <script src="~/Scripts/ngDialog.min.js"></script>
+
+    <!-- bootstrap -->
+    <script src="~/Scripts/ui-bootstrap-tpls.min.js"></script>
+    <script src="~/Scripts/angular-translate.min.js"></script>
+    <!--<script src="Common/components/angular-translate-loader-partial/angular-translate-loader-partial.min.js"></script>-->
+    <script src="~/Scripts/angular-translate-loader-static-files.min.js"></script>
+    <script src="~/Scripts/angular-messages.min.js"></script>
+    <script src="~/Scripts/lodash.min.js"></script>
+    <!--引入通用的工具类组件-->
+    <script src="~/Scripts/vdi.contextpath.module.js"></script>
+    <script src="~/Scripts/vdi.interceptor.module.js"></script>
+
+    <!-- App -->
+    <script src="~/Scripts/login.app.js"></script>
+    <script src="~/Scripts/login.service.js"></script>
+    <script src="~/Scripts/login.ctrl.js"></script>
+    <script src="~/Scripts/help.js"></script>
+    
+</body>
+
+</html>
+<!--公用的ng-message错误信息-->
+<script type="text/ng-template" id="error-messages">
+    <div class="fa fa-exclamation-triangle" ng-message="required" uib-tooltip="{{'login.error.required' |translate}}" tooltip-placement="right"></div>
+</script>
+
